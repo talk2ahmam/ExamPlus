@@ -1,0 +1,31 @@
+# Installed by K-Git Studio. Run it from the Builds tab.
+name: K-Git Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Output'
+        required: true
+        default: zip
+        type: choice
+        options:
+          - zip
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create ZIP
+        run: |
+          mkdir -p out
+          zip -qr out/site.zip . -x ".git/*" ".github/*" "out/*"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-zip
+          path: out/site.zip
+          retention-days: 14
